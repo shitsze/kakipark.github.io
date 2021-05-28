@@ -1,117 +1,70 @@
-<!DOCTYPE html>
-<html lang="ch">
-<head>
-    <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+{% extends '_layout.swig' %}
+{% import '_macro/sidebar.swig' as sidebar_template %}
 
-    <meta name="author" content="LEE SHI TSZE">
+  {% block title %}{#
+  #}{% set page_title_suffix = ' | ' + config.title %}{#
 
+  #}{% if page.type === "categories" and not page.title %}{#
+    #}{{ __('title.category') + page_title_suffix }}{#
+  #}{% elif page.type === "tags" and not page.title %}{#
+    #}{{ __('title.tag') + page_title_suffix }}{#
+  #}{% else %}{#
+    #}{{ page.title + page_title_suffix }}{#
+  #}{% endif %}{#
+#}{% endblock %}
 
-    <meta name="subtitle" content="photography">
+{% block page_class %}page-post-detail{% endblock %}
 
+{% block content %}
 
-
-
-<title>category | KAKIPARK</title>
-
-
-
-    <link rel="icon" href="/favicon.ico">
-
-
-
-
-    <!-- stylesheets list from _config.yml -->
-    
-    <link rel="stylesheet" href="/css/style.css">
-    
-
-
-
-    <!-- scripts list from _config.yml -->
-    
-    <script src="/js/script.js"></script>
-    
-    <script src="/js/tocbot.min.js"></script>
-    
-
-
-
-    
-    
-        
-    
-
-
-<meta name="generator" content="Hexo 5.4.0"></head>
-<body>
-    <div class="wrapper">
-        <header>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-header header-logo"><a href="/">柿子公園 KAKIPARK</a></div>
-            <div class="menu navbar-right">
-                
-                    <a class="menu-item" href="/archives">Posts</a>
-                
-                <input id="switch_default" type="checkbox" class="switch_default">
-                <label for="switch_default" class="toggleBtn"></label>
+  <div id="posts" class="posts-expand">
+    {##################}
+    {### PAGE BLOCK ###}
+    {##################}
+    <div class="post-block page">
+      {% include '_partials/page-header.swig' %}
+      {#################}
+      {### PAGE BODY ###}
+      {#################}
+      <div class="post-body{% if theme.han %} han-init-context{% endif %}{% if page.direction && page.direction.toLowerCase() === 'rtl' %} rtl{% endif %}">
+        {# tagcloud page support #}
+        {% if page.type === "tags" %}
+          <div class="tag-cloud">
+            <div class="tag-cloud-title">
+                {{ _p('counter.tag_cloud', site.tags.length) }}
             </div>
-        </div>
-    </nav>
-
-    
-    <nav class="navbar-mobile" id="nav-mobile">
-        <div class="container">
-            <div class="navbar-header">
-                <div>
-                    <a href="/">柿子公園 KAKIPARK</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
-                </div>
-                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            <div class="tag-cloud-tags">
+              {{ tagcloud({min_font: 12, max_font: 30, amount: 300, color: true, start_color: '#ccc', end_color: '#111'}) }}
             </div>
-            <div class="menu" id="mobile-menu">
-                
-                    <a class="menu-item" href="/archives">Posts</a>
-                
+          </div>
+        {% elif page.type === 'categories' %}
+          <div class="category-all-page">
+            <div class="category-all-title">
+                {{ _p('counter.categories', site.categories.length) }}
             </div>
-        </div>
-    </nav>
-
-</header>
-<script>
-    var mobileBtn = function f() {
-        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
-        var mobileMenu = document.getElementById("mobile-menu");
-        if(toggleMenu.classList.contains("active")){
-           toggleMenu.classList.remove("active")
-            mobileMenu.classList.remove("active")
-        }else{
-            toggleMenu.classList.add("active")
-            mobileMenu.classList.add("active")
-        }
-    }
-</script>
-        <div class="main">
-            <div class="container">
-    <article class="post-wrap page">
-        
-        <h2 class="post-title">category</h2>
-        
-        <section class="post-content">
-            
-        </section>
-    </article>
-</div>
-
-        </div>
-        <footer id="footer" class="footer">
-    <div class="copyright">
-        <span>© LEE SHI TSZE | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+            <div class="category-all">
+              {{ list_categories() }}
+            </div>
+          </div>
+        {% else %}
+          {{ page.content }}
+        {% endif %}
+      </div>
+      {#####################}
+      {### END PAGE BODY ###}
+      {#####################}
     </div>
-</footer>
+    {######################}
+    {### END PAGE BLOCK ###}
+    {######################}
+  </div>
 
-    </div>
-</body>
-</html>
+{% endblock %}
+
+{% block sidebar %}
+  {{ sidebar_template.render(false) }}
+{% endblock %}
+
+{% block script_extra %}
+  {% include '_scripts/pages/post-details.swig' %}
+{% endblock %}
